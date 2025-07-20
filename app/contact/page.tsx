@@ -31,7 +31,7 @@ export default function ContactPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">Send us a message</CardTitle>
-              <CardDescription>Fill out our contact form and we'll respond as soon as possible.</CardDescription>
+              <CardDescription>Fill our contact form and we'll respond as soon as possible.</CardDescription>
             </CardHeader>
             <CardContent>
               {showEmbedded ? (
