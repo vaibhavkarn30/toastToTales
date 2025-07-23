@@ -9,7 +9,7 @@ import { Analytics } from '@vercel/analytics/next';
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Literary Haven Publishing",
+  title: "Toast To Tales",
   description: "Your premier destination for quality books across all genres",
     generator: 'v0.dev'
 }

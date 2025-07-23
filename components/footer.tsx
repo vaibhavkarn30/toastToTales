@@ -8,7 +8,7 @@ export function Footer() {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <Book className="h-8 w-8 text-primary" />
-              <span className="text-xl font-bold">Literary Haven Publishing</span>
+              <span className="text-xl font-bold">Toast To Tales</span>
             </div>
             <p className="text-gray-300 mb-4">
               Bringing you the finest collection of books across all genres. From timeless classics to contemporary
@@ -57,7 +57,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-          <p className="text-gray-300">© 2024 Literary Haven Publishing. All rights reserved.</p>
+          <p className="text-gray-300">© 2024 Toast To Tales. All rights reserved.</p>
         </div>
       </div>
     </footer>
