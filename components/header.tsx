@@ -15,7 +15,7 @@ export function Header() {
   ]
 
   return (
-    <header className="bg-gradient-to-r from-blue-100 via-pink-100 to-yellow-100 shadow-md">
+    <header className="bg-[#F9F4EF] shadow-md border-b border-[#C2B9B0]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between h-24 md:h-20 py-2">
           {/* More Noticeable Logo */}
@@ -32,15 +32,15 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Minimal Vibrant Navigation */}
+          {/* Toasted Neutrals Navigation */}
           <nav className="flex flex-wrap justify-center md:justify-end gap-2 w-full md:w-auto">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  "px-4 py-1.5 rounded-lg font-medium text-gray-700 hover:text-pink-600 transition-colors duration-200 text-base bg-white/60 hover:bg-white/80 border border-transparent hover:border-pink-200 underline-offset-4 hover:underline",
-                  pathname === item.href ? "text-pink-600 underline bg-white/80 border-pink-200" : ""
+                  "px-5 py-2 rounded-md font-semibold text-[#2E2E2E] bg-[#C2B9B0] hover:bg-[#E27970] hover:text-white border border-[#C2B9B0] transition-colors duration-200 text-base shadow-sm",
+                  pathname === item.href ? "bg-[#E27970] text-white border-[#E27970]" : ""
                 )}
               >
                 {item.name}
