@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { BookOpen, Star, Calendar } from "lucide-react"
+import { BookOpen, Calendar, Download, Eye } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -32,6 +32,13 @@ const genres = [
   "Children's Books",
 ]
 
+const catalogYears = [
+  { year: "2025", label: "2025 Catalogue", available: true },
+  { year: "2024", label: "2024 Catalogue", available: true },
+  { year: "2023", label: "2023 Catalogue", available: true },
+  { year: "2022", label: "2022 Catalogue", available: false },
+]
+
 const books = [
   {
     id: 1,
@@ -42,7 +49,7 @@ const books = [
     year: 2024,
     description: "A captivating tale of mystery and magic set in Victorian England.",
     price: "$24.99",
-    image: "https://dummyimage.com/600x400/000/fff&text=Hello",
+    image: "https://res.cloudinary.com/da5aqufzj/image/upload/v1753724882/WhatsApp_Image_2025-07-28_at_23.17.16_nd1qpl.jpg",
   },
   {
     id: 2,
@@ -53,7 +60,7 @@ const books = [
     year: 2023,
     description: "An insightful look into how technology is reshaping our world.",
     price: "$29.99",
-    image: "/placeholder.svg?height=300&width=200",
+    image: "https://res.cloudinary.com/da5aqufzj/image/upload/v1753724882/WhatsApp_Image_2025-07-28_at_23.17.16_nd1qpl.jpg",
   },
   {
     id: 3,
@@ -64,7 +71,7 @@ const books = [
     year: 2024,
     description: "A thrilling journey through time and space in the year 2150.",
     price: "$26.99",
-    image: "/placeholder.svg?height=300&width=200",
+    image: "https://res.cloudinary.com/da5aqufzj/image/upload/v1753724882/WhatsApp_Image_2025-07-28_at_23.17.16_nd1qpl.jpg",
   },
   {
     id: 4,
@@ -75,7 +82,7 @@ const books = [
     year: 2023,
     description: "Essential strategies for modern leadership in the digital age.",
     price: "$32.99",
-    image: "/placeholder.svg?height=300&width=200",
+    image: "https://res.cloudinary.com/da5aqufzj/image/upload/v1753724882/WhatsApp_Image_2025-07-28_at_23.17.16_nd1qpl.jpg",
   },
   {
     id: 5,
@@ -86,7 +93,7 @@ const books = [
     year: 2024,
     description: "A heartwarming love story set against the backdrop of rural Ireland.",
     price: "$22.99",
-    image: "/placeholder.svg?height=300&width=200",
+    image: "https://res.cloudinary.com/da5aqufzj/image/upload/v1753724882/WhatsApp_Image_2025-07-28_at_23.17.16_nd1qpl.jpg",
   },
   {
     id: 6,
@@ -97,38 +104,100 @@ const books = [
     year: 2023,
     description: "A gripping murder mystery that will keep you guessing until the end.",
     price: "$25.99",
-    image: "/placeholder.svg?height=300&width=200",
+    image: "https://res.cloudinary.com/da5aqufzj/image/upload/v1753724882/WhatsApp_Image_2025-07-28_at_23.17.16_nd1qpl.jpg",
   },
 ]
 
 export default function BookshelfPage() {
   const [selectedGenre, setSelectedGenre] = useState("All Genres")
   const [selectedBook, setSelectedBook] = useState<(typeof books)[0] | null>(null)
+  const [selectedCatalogYear, setSelectedCatalogYear] = useState("")
 
   const filteredBooks = selectedGenre === "All Genres" ? books : books.filter((book) => book.genre === selectedGenre)
+
+  const handleCatalogDownload = (year: string) => {
+    // Using the actual Cloudinary PDF URL
+    const catalogUrl = "https://res.cloudinary.com/da5aqufzj/image/upload/v1753726369/1336443563_I0129P2607059403_Jul_25_os4le2.pdf"
+    window.open(catalogUrl, '_blank')
+  }
+
+  const handleCatalogView = (year: string) => {
+    // Using the actual Cloudinary PDF URL
+    const catalogUrl = "https://res.cloudinary.com/da5aqufzj/image/upload/v1753726369/1336443563_I0129P2607059403_Jul_25_os4le2.pdf"
+    window.open(catalogUrl, '_blank')
+  }
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Our Bookshelf</h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
-          Explore our extensive collection of books across various genres. Use the dropdown below to filter by your
-          favorite genre.
+          Explore our extensive collection of books across various genres. Use the dropdowns below to filter by your
+          favorite genre or access our catalogues.
         </p>
 
-        <div className="max-w-xs mx-auto">
-          <Select value={selectedGenre} onValueChange={setSelectedGenre}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a genre" />
-            </SelectTrigger>
-            <SelectContent>
-              {genres.map((genre) => (
-                <SelectItem key={genre} value={genre}>
-                  {genre}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
+          <div className="flex-1">
+            <Select value={selectedGenre} onValueChange={setSelectedGenre}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a genre" />
+              </SelectTrigger>
+              <SelectContent>
+                {genres.map((genre) => (
+                  <SelectItem key={genre} value={genre}>
+                    {genre}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex-1">
+            <Select value={selectedCatalogYear} onValueChange={setSelectedCatalogYear}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a catalogue year" />
+              </SelectTrigger>
+              <SelectContent>
+                {catalogYears.map((catalog) => (
+                  <SelectItem 
+                    key={catalog.year} 
+                    value={catalog.year}
+                    disabled={!catalog.available}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <span>{catalog.label}</span>
+                      {!catalog.available && (
+                        <Badge variant="secondary" className="ml-2">Coming Soon</Badge>
+                      )}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            {/* Catalog Action Buttons - Only under catalog dropdown */}
+            {selectedCatalogYear && (
+              <div className="flex gap-2 mt-2">
+                <Button
+                  onClick={() => handleCatalogView(selectedCatalogYear)}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  View
+                </Button>
+                <Button
+                  onClick={() => handleCatalogDownload(selectedCatalogYear)}
+                  size="sm"
+                  className="flex-1"
+                >
+                  <Download className="h-4 w-4 mr-1" />
+                  Download
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -139,7 +208,7 @@ export default function BookshelfPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-5 gap-4">
         {filteredBooks.map((book) => (
           <Card key={book.id} className="hover:shadow-lg transition-shadow">
             <div className="aspect-[3/4] w-full overflow-hidden rounded-t-lg">
@@ -149,30 +218,26 @@ export default function BookshelfPage() {
                 className="h-full w-full object-cover transition-transform hover:scale-105"
               />
             </div>
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-2 px-3 pt-3">
               <div className="flex justify-between items-start mb-2">
-                <Badge variant="secondary">{book.genre}</Badge>
-                <div className="flex items-center space-x-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-medium">{book.rating}</span>
-                </div>
+                <Badge variant="secondary" className="text-xs">{book.genre}</Badge>
               </div>
-              <CardTitle className="text-xl line-clamp-2">{book.title}</CardTitle>
-              <CardDescription className="text-gray-600">by {book.author}</CardDescription>
+              <CardTitle className="text-sm line-clamp-2 leading-tight">{book.title}</CardTitle>
+              <CardDescription className="text-xs text-gray-600">by {book.author}</CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-4 text-sm line-clamp-3">{book.description}</p>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-1 text-sm text-gray-500">
-                  <Calendar className="h-4 w-4" />
+            <CardContent className="px-3 pb-3">
+              <p className="text-gray-600 mb-3 text-xs line-clamp-2 leading-tight">{book.description}</p>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-1 text-xs text-gray-500">
+                  <Calendar className="h-3 w-3" />
                   <span>{book.year}</span>
                 </div>
-                <span className="text-lg font-bold text-primary">{book.price}</span>
+                <span className="text-sm font-bold text-primary">{book.price}</span>
               </div>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button className="w-full" onClick={() => setSelectedBook(book)}>
-                    <BookOpen className="h-4 w-4 mr-2" />
+                  <Button className="w-full text-xs py-1" onClick={() => setSelectedBook(book)}>
+                    <BookOpen className="h-3 w-3 mr-1" />
                     View Details
                   </Button>
                 </DialogTrigger>
@@ -195,11 +260,6 @@ export default function BookshelfPage() {
                           <Badge variant="secondary" className="text-sm">
                             {book.genre}
                           </Badge>
-                          <div className="flex items-center space-x-1">
-                            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                            <span className="text-lg font-medium">{book.rating}</span>
-                            <span className="text-gray-500">/ 5.0</span>
-                          </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
@@ -240,16 +300,6 @@ export default function BookshelfPage() {
                           <span className="ml-2 text-gray-900">Hardcover, Paperback, eBook</span>
                         </div>
                       </div>
-                    </div>
-
-                    <div className="flex space-x-3 pt-4">
-                      <Button className="flex-1">
-                        <BookOpen className="h-4 w-4 mr-2" />
-                        Add to Cart
-                      </Button>
-                      <Button variant="outline" className="flex-1 bg-transparent">
-                        Preview Sample
-                      </Button>
                     </div>
                   </div>
                 </DialogContent>

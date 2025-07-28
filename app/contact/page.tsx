@@ -3,17 +3,58 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Mail, Phone, MapPin, ExternalLink } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle } from "lucide-react"
+import { toast } from "sonner"
 
 export default function ContactPage() {
-  const [showEmbedded, setShowEmbedded] = useState(true)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    query: ""
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
-  // Replace this URL with your actual Google Form embed URL
-  const googleFormEmbedUrl =
-    "https://docs.google.com/forms/d/e/1FAIpQLSfouQe9OucovdBrdYFuHSfQ03p9pnBnswUPh0YZJLR1cftVaw/viewform?usp=sf_link"
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
 
-  // Replace this URL with your actual Google Form direct URL
-  const googleFormDirectUrl = "https://docs.google.com/forms/d/e/1FAIpQLSf_EXAMPLE_FORM_ID/viewform"
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    try {
+      // Google Apps Script web app URL
+      const scriptURL = "https://script.google.com/macros/s/AKfycbzxK03UVIfpH6-dHxGt7GQ-oe3s-XJaUX27GTAllg0Ccv5dH8f19V-4CLP55K_8km4p/exec"
+      
+      const response = await fetch(scriptURL, {
+        method: "POST",
+        body: new FormData(e.target as HTMLFormElement),
+        mode: "no-cors"
+      })
+
+      if (response.ok || response.status === 0) {
+        setIsSubmitted(true)
+        setFormData({ name: "", email: "", phone: "", query: "" })
+        toast.success("Message sent successfully! We'll get back to you soon.")
+      } else {
+        throw new Error("Failed to submit form")
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error)
+      toast.error("Failed to send message. Please try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -26,57 +67,103 @@ export default function ContactPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Google Form Section */}
+        {/* Contact Form Section */}
         <div className="lg:col-span-1">
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">Send us a message</CardTitle>
-              <CardDescription>Fill our contact form and we'll respond as soon as possible.</CardDescription>
+              <CardDescription>Fill out the form below and we'll respond as soon as possible.</CardDescription>
             </CardHeader>
             <CardContent>
-              {showEmbedded ? (
-                <div className="w-full">
-                  {/* Embedded Google Form */}
-                  <div className="relative w-full h-[600px] border rounded-lg overflow-hidden">
-                    <iframe
-                      src={googleFormEmbedUrl}
-                      width="100%"
-                      height="100%"
-                      frameBorder="0"
-                      marginHeight={0}
-                      marginWidth={0}
-                      title="Contact Form"
-                      className="absolute inset-0"
-                    >
-                      Loading contact form...
-                    </iframe>
+              {!isSubmitted ? (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name *</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="Enter your full name"
+                      className="w-full"
+                    />
                   </div>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Having trouble with the form?
-                    <a
-                      href={googleFormDirectUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline ml-1"
-                    >
-                      Open in a new window
-                    </a>
-                  </p>
-                </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address *</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="Enter your email address"
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="Enter your phone number (optional)"
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="query">Message *</Label>
+                    <Textarea
+                      id="query"
+                      name="query"
+                      required
+                      value={formData.query}
+                      onChange={handleInputChange}
+                      placeholder="Tell us about your inquiry..."
+                      rows={5}
+                      className="w-full resize-none"
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4 mr-2" />
+                        Send Message
+                      </>
+                    )}
+                  </Button>
+                </form>
               ) : (
-                <div className="text-center py-12">
-                  <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ExternalLink className="h-8 w-8 text-primary" />
+                <div className="text-center py-8">
+                  <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Open Contact Form</h3>
+                  <h3 className="text-lg font-semibold text-green-800 mb-2">Message Sent Successfully!</h3>
                   <p className="text-gray-600 mb-4">
-                    Click the button below to open our contact form in a new tab for the best experience.
+                    Thank you for contacting us. We'll get back to you within 24 hours.
                   </p>
-                  <Button asChild>
-                    <a href={googleFormDirectUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Open Contact Form
-                    </a>
+                  <Button 
+                    onClick={() => setIsSubmitted(false)}
+                    variant="outline"
+                  >
+                    Send Another Message
                   </Button>
                 </div>
               )}
@@ -98,8 +185,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">Email</h3>
-                  <p className="text-gray-600">info@literaryhaven.com</p>
-                  <p className="text-gray-600">submissions@literaryhaven.com</p>
+                  <p className="text-gray-600">info@toasttotales.com</p>
+                  <p className="text-gray-600">submissions@toasttotales.com</p>
                 </div>
               </div>
 
@@ -140,7 +227,7 @@ export default function ContactPage() {
                   <h3 className="font-semibold text-gray-900">Follow Us</h3>
                   <div className="flex space-x-4 mt-2">
                     <a
-                      href="https://facebook.com/literaryhaven"
+                      href="https://facebook.com/toasttotales"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors"
@@ -151,7 +238,7 @@ export default function ContactPage() {
                       <span className="text-sm">Facebook</span>
                     </a>
                     <a
-                      href="https://instagram.com/literaryhaven"
+                      href="https://instagram.com/toasttotales"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center space-x-2 text-gray-600 hover:text-pink-600 transition-colors"
@@ -162,7 +249,7 @@ export default function ContactPage() {
                       <span className="text-sm">Instagram</span>
                     </a>
                     <a
-                      href="https://twitter.com/literaryhaven"
+                      href="https://twitter.com/toasttotales"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center space-x-2 text-gray-600 hover:text-blue-400 transition-colors"
@@ -200,8 +287,6 @@ export default function ContactPage() {
               </div>
             </CardContent>
           </Card>
-
-          {/* Instructions Card */}
         </div>
       </div>
     </div>
